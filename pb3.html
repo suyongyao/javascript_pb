@@ -131,7 +131,7 @@ function op1(val) {
 	/* get value. */
 	var numerator = parseInt(current_pb.getAttribute("data-myValue"), 10) + val;
 	var width = ((numerator)/bar_limit)*100;
-	width = Math.round(width);
+	var width = Math.round(width);
 	
 	if (width < 0 ) {
 		width = 0;
