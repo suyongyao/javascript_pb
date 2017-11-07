@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<style>
+.Bars_BG {
+  width: 50%;
+  background-color: #ddd;
+}
+.Bars {
+  width: 0%;
+  height: 30px;
+  background-color: #00ff00;
+}
+div.pctText {
+	display:inline-block;
+	position: relative;
+	top: -25px;
+	left: 25%;
+
+}
+</style>
+</head>
+<body>
+
+<h1>JavaScript Progress Bar</h1>
+<br>
+<div id="region2">
+
+</div>
+<select id="selectPB"></select>
+<button onclick="loadEndPoint_string()">Init</button>
+<!--<button onclick="init()">Init</button>-->
+<button id="btss" onClick="op2(this.textContent)">-25</button>
+<button id="bts" onClick="op2(this.textContent)">-10</button>
+<button id="bta" onClick="op2(this.textContent)">+10</button>
+<button id="btaa" onClick="op2(this.textContent)">+25</button>
+<br>
+<p id="demo"></p>
+
+<script>
+var selectPB = document.getElementById("selectPB");
+var options = null;
+var buttons = [];
+var bar_value = [];
+var bar_limit = 100;
+var btss = document.getElementById("btss");
+var bts = document.getElementById("bts");
+var bta = document.getElementById("bta");
+var btaa = document.getElementById("btaa");
+var div2 = document.getElementById("region2");
+var para_string = "";
+//para_string = '{"buttons":[12,20,-24,-42],"bars":[35,28,57,52],"limit":150}';
+
+/** generate random integer.*/
+function random(from, to) {
+	return Math.floor(Math.random()*(to-from+1))+from;	
+}
+
+function loadEndPoint_string() {
+  var xmlhttp = new XMLHttpRequest();
+  xmlhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+     para_string = this.responseText;
+	 document.getElementById("demo").innerHTML = para_string;
+	 init();
+    }
+  };
+  xmlhttp.open("GET", "http://pb-api.herokuapp.com/bars", true);
+  xmlhttp.send();
+}
+
+/** create progress bars from JSON string. */
+function init() {	
+	var obj = JSON.parse(para_string);
+	
+	/* retrieve settings from endpoint. */
+	buttons = obj['buttons'].sort(function(a,b){return a-b});
+	bar_value = obj['bars'];	
+	bar_limit = parseInt(obj['limit'],10);
+		
+	/* set button text. */
+	btss.textContent = buttons[0];
+	bts.textContent = buttons[1];
+	bta.textContent = "+" + buttons[2];
+	btaa.textContent ="+" + buttons[3];
+	
+	/* create bars. */
+	var htmlContent = "";
+	for(i=0; i < bar_value.length; i++) {
+		var temp_id = "bar" + i;
+		var txt_id = "txt" + i;
+		htmlContent += '<div class="Bars_BG"><div data-myValue="0" class="Bars" id="'+temp_id+'"></div></div><div class="pctText" id="'+txt_id+'"></div>';
+		htmlContent += '<br>';
+		
+		/**populate options*/
+		var el = document.createElement("option");
+		el.id = i;
+		el.textContent = "Progress Bar #"+ (i+1);
+		el.value = i;
+		selectPB.appendChild(el);
+	}
+	div2.innerHTML = htmlContent;
+	
+	/* set bar value and text. */
+	for(i=0; i < bar_value.length; i++) {
+		var pb = document.getElementById("bar"+i);	
+		pb.setAttribute("data-myValue", bar_value[i]);
+		var numerator = parseInt(bar_value[i], 10);
+		var denominator = parseInt(bar_limit,10);
+		var result_pct = (numerator/denominator)*100;
+		result_pct = Math.round(result_pct);
+		pb.style.width = result_pct + "%";
+		
+		/* set bar text. */
+		var txtid = document.getElementById("txt"+i);
+		txtid.innerHTML = result_pct + " %";
+	}
+}
+
+/* add or subtract in value with denominator calculation*/
+function op1(val) {
+	val = parseInt(val, 10);
+	var cur_index = document.getElementById("selectPB").selectedIndex;
+	var current_pb = document.getElementById("bar"+cur_index);
+
+	/* get value. */
+	var numerator = parseInt(current_pb.getAttribute("data-myValue"), 10) + val;
+	var width = ((numerator)/bar_limit)*100;
+	width = Math.round(width);
+	
+	if (width < 0 ) {
+		width = 0;
+		numerator = 0;
+	}
+	
+	/* set text. */
+	var txtid = document.getElementById("txt"+cur_index);
+	txtid.innerHTML = width + " %";
+	
+	/* store value. */
+	current_pb.setAttribute("data-myValue", numerator);
+	
+	/* bar color. */
+	if(width > 100) {
+		width = 100;
+		current_pb.style.backgroundColor = "#ff0000";
+	} else {
+		current_pb.style.backgroundColor = "#00ff00";
+	}
+	
+	/* set width. */
+	current_pb.style.width = width+"%";
+}
+
+/* add or subtract in percentage directly. no denominator calculation */ 
+function op2(val) {
+	val = parseInt(val, 10);
+	var cur_index = document.getElementById("selectPB").selectedIndex;
+	var current_pb = document.getElementById("bar"+cur_index);
+
+	/* get value. */
+	var width = parseInt(current_pb.getAttribute("data-myValue"), 10);
+	width = width + val;
+	if (width < 0 ) width = 0;
+	
+	/* set text. */
+	var txtid = document.getElementById("txt"+cur_index);
+	txtid.innerHTML = width + " %";
+	
+	/* store value. */
+	current_pb.setAttribute("data-myValue", width);
+	
+	/* bar color. */
+	if(width > 100) {
+		width = 100;
+		current_pb.style.backgroundColor = "#ff0000";
+	} else {
+		current_pb.style.backgroundColor = "#00ff00";
+	}
+	
+	/* set width. */
+	current_pb.style.width = width+"%";
+}
+</script>
+
+</body>
+</html>
