@@ -32,10 +32,10 @@ div.pctText {
 <select id="selectPB"></select>
 <button onclick="loadEndPoint_string()">Init</button>
 <!--<button onclick="init()">Init</button>-->
-<button id="btss" onClick="op2(this.textContent)">-25</button>
-<button id="bts" onClick="op2(this.textContent)">-10</button>
-<button id="bta" onClick="op2(this.textContent)">+10</button>
-<button id="btaa" onClick="op2(this.textContent)">+25</button>
+<button id="btss" onClick="op1(this.textContent)">-25</button>
+<button id="bts" onClick="op1(this.textContent)">-10</button>
+<button id="bta" onClick="op1(this.textContent)">+10</button>
+<button id="btaa" onClick="op1(this.textContent)">+25</button>
 <br>
 <p id="demo"></p>
 
@@ -165,9 +165,10 @@ function op2(val) {
 
 	/* get value. */
 	var width = parseInt(current_pb.getAttribute("data-myValue"), 10);
+	console.log(width);
 	width = width + val;
 	if (width < 0 ) width = 0;
-	
+	console.log(width);
 	/* set text. */
 	var txtid = document.getElementById("txt"+cur_index);
 	txtid.innerHTML = width + " %";
