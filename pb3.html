@@ -73,6 +73,9 @@ function loadEndPoint_string() {
 
 /** create progress bars from JSON string. */
 function init() {	
+	/* empty dropdownlist. */
+	selectPB.innerHTML = "";
+	
 	var obj = JSON.parse(para_string);
 	
 	/* retrieve settings from endpoint. */
