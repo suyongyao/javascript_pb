@@ -128,33 +128,35 @@ function op1(val) {
 	var cur_index = document.getElementById("selectPB").selectedIndex;
 	var current_pb = document.getElementById("bar"+cur_index);
 
-	/* get value. */
-	var numerator = parseInt(current_pb.getAttribute("data-myValue"), 10) + val;
-	var width = ((numerator)/bar_limit)*100;
-	width = Math.round(width);
-	
-	if (width < 0 ) {
-		width = 0;
-		numerator = 0;
+	if(current_pb != null) {
+		/* get value. */
+		var numerator = parseInt(current_pb.getAttribute("data-myValue"), 10) + val;
+		var width = ((numerator)/bar_limit)*100;
+		width = Math.round(width);
+		
+		if (width < 0 ) {
+			width = 0;
+			numerator = 0;
+		}
+		
+		/* set text. */
+		var txtid = document.getElementById("txt"+cur_index);
+		txtid.innerHTML = width + " %";
+		
+		/* store value. */
+		current_pb.setAttribute("data-myValue", numerator);
+		
+		/* bar color. */
+		if(width > 100) {
+			width = 100;
+			current_pb.style.backgroundColor = "#ff0000";
+		} else {
+			current_pb.style.backgroundColor = "#00ff00";
+		}
+		
+		/* set width. */
+		current_pb.style.width = width+"%";
 	}
-	
-	/* set text. */
-	var txtid = document.getElementById("txt"+cur_index);
-	txtid.innerHTML = width + " %";
-	
-	/* store value. */
-	current_pb.setAttribute("data-myValue", numerator);
-	
-	/* bar color. */
-	if(width > 100) {
-		width = 100;
-		current_pb.style.backgroundColor = "#ff0000";
-	} else {
-		current_pb.style.backgroundColor = "#00ff00";
-	}
-	
-	/* set width. */
-	current_pb.style.width = width+"%";
 }
 
 /* add or subtract in percentage directly. no denominator calculation */ 
