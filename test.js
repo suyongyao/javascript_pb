@@ -82,5 +82,13 @@ test('op1', assert => {
 
         assert.same(actual, expected, msg);
     }
+    {
+        const msg = 'op1() add -string and +string.';
+
+        const actual = op1("-10", "+70");
+        const expected = 60;
+
+        assert.same(actual, expected, msg);
+    }
 
 })
