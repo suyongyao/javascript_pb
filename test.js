@@ -15,6 +15,7 @@ const op2 = (width, x, denominator) => {
     x = +x;
     width = +width;
     denominator = +denominator;
+    if (denominator == 0) denominator = 100;
     let result = ((width + x)/denominator)*100;
     result = Math.round(result);
     if (result < 0 ) {
@@ -145,6 +146,14 @@ test('op2', assert => {
         const msg = 'op2() add number and -string, limit 1000.';
 
         const actual = op2("50", "10", 100);
+        const expected = 60;
+
+        assert.same(actual, expected, msg);
+    }
+    {
+        const msg = 'op2() if limit is zero, set it to 100.';
+
+        const actual = op2("50", "10", 0);
         const expected = 60;
 
         assert.same(actual, expected, msg);
